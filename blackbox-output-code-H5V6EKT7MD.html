@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .sticker-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sticker-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        .sticker-emoji {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .sticker-card:hover .sticker-emoji {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .sticker-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .sticker-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .category-filter {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .sticker-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            .filter-btn {
+                padding: 10px 20px;
+                margin: 5px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .search-box {
+            display: block;
+            width: 300px;
+            max-width: 100%;
+            margin: 0 auto 30px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Sticker Collection</h1>
+        <p class="subtitle">Discover and collect amazing stickers!</p>
+        
+        <input type="text" class="search-box" placeholder="🔍 Search stickers..." id="searchInput">
+        
+        <div class="category-filter">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="animals">Animals</button>
+            <button class="filter-btn" data-category="food">Food</button>
+            <button class="filter-btn" data-category="emotions">Emotions</button>
+            <button class="filter-btn" data-category="objects">Objects</button>
+        </div>
+
+        <div class="sticker-grid" id="stickerGrid">
+            <!-- Stickers will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const stickers = [
+            { name: "Happy Face", emoji: "😊", category: "emotions", desc: "Perfect for showing you're feeling great!" },
+            { name: "Pizza Slice", emoji: "🍕", category: "food", desc: "Who doesn't love pizza?" },
+            { name: "Dancing Cat", emoji: "🐱💃", category: "animals", desc: "Party time with this groovy cat!" },
+            { name: "Rocket", emoji: "🚀", category: "objects", desc: "Blast off to new adventures!" },
+            { name: "Heart Eyes", emoji: "😍", category: "emotions", desc: "When you're totally in love!" },
+            { name: "Ice Cream", emoji: "🍦", category: "food", desc: "Sweet treat for hot days!" },
+            { name: "Panda", emoji: "🐼", category: "animals", desc: "Cute and cuddly bamboo lover!" },
+            { name: "Camera", emoji: "📸", category: "objects", desc: "Capture the moment!" },
+            { name: "Laughing", emoji: "😂", category: "emotions", desc: "Can't stop laughing!" },
+            { name: "Burger", emoji: "🍔", category: "food", desc: "Classic juicy burger!" },
+            { name: "Doggo", emoji: "🐶", category: "animals", desc: "Good boy needs pets!" },
+            { name: "Laptop", emoji: "💻", category: "objects", desc: "Work hard, play hard!" },
+            { name: "Thumbs Up", emoji: "👍", category: "emotions", desc: "Great job!" },
+            { name: "Taco", emoji: "🌮", category: "food", desc: "Taco Tuesday every day!" },
+            { name: "Owl", emoji: "🦉", category: "animals", desc: "Wise night guardian!" },
+            { name: "Gift", emoji: "🎁", category: "objects", desc: "Surprise inside!" }
+        ];
+
+        const stickerGrid = document.getElementById('stickerGrid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderStickers(stickersToShow = stickers) {
+            stickerGrid.innerHTML = '';
+            stickersToShow.forEach(sticker => {
+                const stickerCard = document.createElement('div');
+                stickerCard.className = 'sticker-card';
+                stickerCard.dataset.category = sticker.category;
+                stickerCard.innerHTML = `
+                    <span class="sticker-emoji">${sticker.emoji}</span>
+                    <div class="sticker-name">${sticker.name}</div>
+                    <div class="sticker-desc">${sticker.desc}</div>
+                `;
+                stickerGrid.appendChild(stickerCard);
+            });
+        }
+
+        function filterStickers(category) {
+            let filtered = stickers;
+            if (category !== 'all') {
+                filtered = stickers.filter(sticker => sticker.category === category);
+            }
+            renderStickers(filtered);
+        }
+
+        // Filter button event listeners
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterStickers(btn.dataset.category);
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = stickers.filter(sticker => 
+                sticker.name.toLowerCase().includes(searchTerm) ||
+                sticker.desc.toLowerCase().includes(searchTerm)
+            );
+            renderStickers(filtered);
+        });
+
+        // Initial render
+        renderStickers();
+    </script>
+</body>
+</html>
