@@ -1,2 +1,2 @@
 # Sticker-Website
-Here you will fine one of the best stickers.
+Here you will find one of the best stickers.
